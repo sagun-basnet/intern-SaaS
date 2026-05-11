@@ -137,6 +137,19 @@ const options = {
             deadline: { type: 'string', format: 'date-time' },
           },
         },
+        // Notification schemas
+        Notification: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer', example: 1 },
+            userId: { type: 'integer', example: 5 },
+            title: { type: 'string', example: 'New Application Received' },
+            message: { type: 'string', example: 'Someone applied for your job.' },
+            type: { type: 'string', example: 'NEW_APPLICATION' },
+            isRead: { type: 'boolean', example: false },
+            createdAt: { type: 'string', format: 'date-time' },
+          },
+        },
       },
     },
     security: [{ bearerAuth: [] }],

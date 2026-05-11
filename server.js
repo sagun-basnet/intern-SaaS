@@ -2,7 +2,11 @@ require('dotenv').config();
 const app = require('./src/app');
 const prisma = require('./src/config/db');
 
+const http = require('http');
+const { initSocket } = require('./src/config/socket');
+
 const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
 
 const startServer = async () => {
   try {
@@ -10,7 +14,11 @@ const startServer = async () => {
     await prisma.$connect();
     console.log('✅ Database connected successfully.');
 
-    app.listen(PORT, () => {
+    // Initialize Socket.io
+    initSocket(server);
+    console.log('✅ Socket.io initialized.');
+
+    server.listen(PORT, () => {
       console.log('');
       console.log('🚀 ==========================================');
       console.log(`   SaaS Job & Internship Portal API`);

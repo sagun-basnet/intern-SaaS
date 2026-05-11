@@ -1,5 +1,6 @@
 const prisma = require('../config/db');
 const { getPagination, buildPaginationMeta } = require('../utils/pagination');
+const notificationService = require('./notification.service');
 
 const applyForJob = async (userId, jobId, { message, resumeUrl }) => {
   const job = await prisma.job.findFirst({ where: { id: jobId, isActive: true } });
@@ -16,7 +17,21 @@ const applyForJob = async (userId, jobId, { message, resumeUrl }) => {
     err.statusCode = 409;
     throw err;
   }
-  return prisma.application.create({ data: { userId, jobId, message, resumeUrl } });
+  
+  const application = await prisma.application.create({ 
+    data: { userId, jobId, message, resumeUrl },
+    include: { user: { select: { profile: { select: { fullName: true } } } }, job: { select: { title: true, company: { select: { userId: true, name: true } } } } }
+  });
+
+  // Notify Company
+  await notificationService.createNotification({
+    userId: application.job.company.userId,
+    title: 'New Job Application',
+    message: `${application.user.profile?.fullName || 'A candidate'} applied for ${application.job.title}`,
+    type: 'NEW_APPLICATION'
+  });
+
+  return application;
 };
 
 const getMyApplications = async (userId, query) => {
@@ -93,7 +108,22 @@ const updateApplicationStatus = async (userId, applicationId, status) => {
     err.statusCode = 404;
     throw err;
   }
-  return prisma.application.update({ where: { id: applicationId }, data: { status } });
+  
+  const updatedApplication = await prisma.application.update({ 
+    where: { id: applicationId }, 
+    data: { status },
+    include: { job: { select: { title: true } } }
+  });
+
+  // Notify Seeker
+  await notificationService.createNotification({
+    userId: updatedApplication.userId,
+    title: 'Application Status Updated',
+    message: `Your application for ${updatedApplication.job.title} has been ${status.toLowerCase()}`,
+    type: 'APPLICATION_STATUS_UPDATE'
+  });
+
+  return updatedApplication;
 };
 
 module.exports = { applyForJob, getMyApplications, getApplicantsForJob, updateApplicationStatus };

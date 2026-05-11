@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, User, Briefcase, Bell } from 'lucide-react';
 import axios from 'axios';
+import { useSocket } from '../context/SocketContext';
+import NotificationDropdown from '../components/NotificationDropdown';
 
 const Dashboard = () => {
   const [userData, setUserData] = useState(null);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const { unreadCount } = useSocket();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,11 +41,38 @@ const Dashboard = () => {
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        marginBottom: '32px'
+        marginBottom: '32px',
+        position: 'relative'
       }}>
         <h2 className="gradient-text" style={{ fontWeight: '800' }}>Lunar SaaS</h2>
         <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-          <Bell size={20} style={{ color: 'var(--text-secondary)', cursor: 'pointer' }} />
+          <div style={{ position: 'relative' }}>
+            <Bell 
+              size={20} 
+              style={{ color: 'var(--text-secondary)', cursor: 'pointer' }} 
+              onClick={() => setIsNotifOpen(!isNotifOpen)}
+            />
+            {unreadCount > 0 && (
+              <span style={{
+                position: 'absolute',
+                top: '-8px',
+                right: '-8px',
+                background: 'var(--accent-primary)',
+                color: 'white',
+                fontSize: '10px',
+                fontWeight: 'bold',
+                padding: '2px 6px',
+                borderRadius: '10px',
+                border: '2px solid var(--bg-primary)'
+              }}>
+                {unreadCount}
+              </span>
+            )}
+            <NotificationDropdown 
+              isOpen={isNotifOpen} 
+              onClose={() => setIsNotifOpen(false)} 
+            />
+          </div>
           <button 
             onClick={handleLogout}
             style={{ 
