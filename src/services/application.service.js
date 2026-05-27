@@ -23,14 +23,14 @@ const applyForJob = async (userId, jobId, { message, resumeUrl }) => {
     include: { user: { select: { profile: { select: { fullName: true } } } }, job: { select: { title: true, company: { select: { userId: true, name: true } } } } }
   });
 
-  // Notify Company
-  await notificationService.createNotification({
-    userId: application.job.company.userId,
-    title: 'New Job Application',
-    message: `${application.user.profile?.fullName || 'A candidate'} applied for ${application.job.title}`,
-    type: 'NEW_APPLICATION'
-  });
-
+  // Notification disabled – kept for reference
+  // await notificationService.createNotification({
+  //   userId: application.job.company.userId,
+  //   title: 'New Job Application',
+  //   message: `${application.user.profile?.fullName || 'A candidate'} applied for ${application.job.title}`,
+  //   type: 'NEW_APPLICATION'
+  // });
+  // (notification call commented out)
   return application;
 };
 
