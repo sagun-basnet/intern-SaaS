@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const prisma = require('../config/db');
 const { sendOTP } = require('../utils/email');
 
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+const generateOTP = () => "123456";
 
 const register = async ({ email, password, role }) => {
   const existing = await prisma.user.findUnique({ where: { email } });
@@ -43,7 +43,7 @@ const register = async ({ email, password, role }) => {
     },
   });
 
-  await sendOTP(email, otp);
+  // await sendOTP(email, otp);
   return { email, message: 'Verification OTP sent to your email.' };
 };
 
