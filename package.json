@@ -4,8 +4,10 @@
   "description": "SaaS Job & Internship Portal REST API",
   "main": "server.js",
   "scripts": {
-    "prestart": "npx prisma generate",
+    "postinstall": "prisma generate",
     "start": "node server.js",
+    "vercel-build": "prisma generate",
+    "build": "prisma generate",
     "dev": "nodemon server.js",
     "db:migrate": "npx prisma migrate dev",
     "db:generate": "npx prisma generate",
@@ -41,10 +43,10 @@
     "socket.io": "^4.8.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "vercel": "^54.5.0"
+    "vercel": "^54.5.0",
+    "prisma": "^5.22.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14",
-    "prisma": "^5.22.0"
+    "nodemon": "^3.1.14"
   }
 }
