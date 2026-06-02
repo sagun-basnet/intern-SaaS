@@ -1,8 +1,7 @@
 // Generator and datasource
 generator client {
   provider = "prisma-client-js"
-    output   = "../src/generated/client"
-
+  output   = "../src/generated/client"
 }
 
 datasource db {
@@ -45,23 +44,23 @@ enum ApplicationStatus {
 // ─── Models ───────────────────────────────────────────────────────────────────
 
 model User {
-  id           Int           @id @default(autoincrement())
-  email        String        @unique
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
   password     String?
-  googleId     String?       @unique
-  authProvider AuthProvider  @default(LOCAL)
-  role         Role          @default(SEEKER)
-  isActive     Boolean       @default(true)
-  isVerified   Boolean       @default(false)
+  googleId     String?      @unique
+  authProvider AuthProvider @default(LOCAL)
+  role         Role         @default(SEEKER)
+  isActive     Boolean      @default(true)
+  isVerified   Boolean      @default(false)
   otp          String?
   otpExpires   DateTime?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
-  profile      Profile?
-  company      Company?
-  applications Application[]
-  bookmarks    Bookmark[]
+  profile       Profile?
+  company       Company?
+  applications  Application[]
+  bookmarks     Bookmark[]
   notifications Notification[]
 
   @@map("users")
@@ -103,18 +102,18 @@ model Company {
 }
 
 model Job {
-  id           Int       @id @default(autoincrement())
-  companyId    Int
-  title        String
-  description  String    @db.Text
-  location     String
-  type         JobType   @default(FULL_TIME)
-  salary       String?
-  skills       String?   @db.Text
-  deadline     DateTime?
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  companyId   Int
+  title       String
+  description String    @db.Text
+  location    String
+  type        JobType   @default(FULL_TIME)
+  salary      String?
+  skills      String?   @db.Text
+  deadline    DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   applications Application[]
@@ -158,7 +157,7 @@ model Notification {
   userId    Int
   title     String
   message   String   @db.Text
-  type      String   // e.g., 'APPLICATION_UPDATE', 'NEW_JOB', 'SYSTEM'
+  type      String // e.g., 'APPLICATION_UPDATE', 'NEW_JOB', 'SYSTEM'
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
