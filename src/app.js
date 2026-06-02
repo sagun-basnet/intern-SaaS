@@ -13,6 +13,11 @@ require('./config/passport');
 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
 // ─── Core Middleware ──────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
@@ -24,24 +29,24 @@ app.use(passport.initialize());
 // ─── Static File Serving (uploaded resumes) ───────────────────────────────────
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-// ─── Swagger Docs ─────────────────────────────────────────────────────────────
-app.use(
-  '/api/docs',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    customSiteTitle: 'SaaS Job Portal API Docs',
-    customCss: '.swagger-ui .topbar { background-color: #1e1e2e; }',
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-  })
-);
+// // ─── Swagger Docs ─────────────────────────────────────────────────────────────
+// app.use(
+//   '/api/docs',
+//   swaggerUi.serve,
+//   swaggerUi.setup(swaggerSpec, {
+//     customSiteTitle: 'SaaS Job Portal API Docs',
+//     customCss: '.swagger-ui .topbar { background-color: #1e1e2e; }',
+//     swaggerOptions: {
+//       persistAuthorization: true,
+//     },
+//   })
+// );
 
-// Expose raw OpenAPI JSON
-app.get('/api/docs.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(swaggerSpec);
-});
+// // Expose raw OpenAPI JSON
+// app.get('/api/docs.json', (req, res) => {
+//   res.setHeader('Content-Type', 'application/json');
+//   res.send(swaggerSpec);
+// });
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api', apiRoutes);
